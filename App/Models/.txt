@@ -1,0 +1,13 @@
+# Pasta Models
+
+Esta pasta contém modelos de dados específicos da interface do usuário que são usados apenas na camada de apresentação.
+
+Diferentemente dos DTOs na camada ApiClient, estes modelos são usados para:
+- Adaptar dados da API para a UI
+- Armazenar dados temporários da UI
+- Representar estruturas de dados específicas da UI
+
+Exemplos:
+- Classes de agregação de dados de várias fontes
+- Modelos para formulários
+- Modelos para filtros e pesquisas

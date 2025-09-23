@@ -1,0 +1,18 @@
+# Pasta Styles
+
+Esta pasta contém dicionários de recursos XAML para estilos visuais da aplicação.
+
+Aqui você deve colocar:
+- Estilos para controles (Button, TextBox, etc.)
+- Temas e esquemas de cores
+- Templates de controles
+- Recursos compartilhados (Brushes, Colors, etc.)
+
+Organização recomendada:
+- Colors.xaml - Definições de cores
+- Brushes.xaml - Definições de pinceis
+- ButtonStyles.xaml - Estilos para botões
+- TextStyles.xaml - Estilos para textos e campos de entrada
+- ControlTemplates.xaml - Templates personalizados para controles
+
+Todos os estilos devem ser referenciados no App.xaml para disponibilidade global.

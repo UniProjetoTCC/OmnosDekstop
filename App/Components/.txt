@@ -1,0 +1,13 @@
+# Pasta Components
+
+Esta pasta contém componentes reutilizáveis da interface do usuário (UserControls) que podem ser usados em várias telas do aplicativo.
+
+Exemplos de componentes que podem ser colocados aqui:
+- Cards
+- Botões personalizados
+- Campos de entrada personalizados
+- Tabelas e grids reutilizáveis
+- Menus e barras de navegação
+- Diálogos e modais
+
+Cada componente deve ser um UserControl com seu próprio ViewModel, se necessário.

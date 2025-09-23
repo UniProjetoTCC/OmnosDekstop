@@ -1,0 +1,13 @@
+{
+  "Version": 3,
+  "ListAllProjects": false,
+  "MultiProjectConfigurations": {
+    "Default": {
+      "Projects": {
+        "App\\App.csproj": {
+          "ProfileName": "Omnos.Desktop"
+        }
+      }
+    }
+  }
+}

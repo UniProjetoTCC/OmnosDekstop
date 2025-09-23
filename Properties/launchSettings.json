@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Omnos.Desktop": {
+      "commandName": "Project",
+      "projectPath": "App\\App.csproj"
+    }
+  }
+}
