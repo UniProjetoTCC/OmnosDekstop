@@ -1,1 +1,27 @@
-pasta para assets do projeto
+# Pasta Assets
+
+Esta pasta contém recursos estáticos utilizados pela aplicação.
+
+Aqui devem ser armazenados:
+- Imagens (.png, .jpg, .svg)
+- Ícones (.ico)
+- Fontes (.ttf, .otf)
+- Arquivos de áudio (.mp3, .wav)
+- Outros recursos binários
+
+Recomendações:
+- Organize os arquivos em subpastas (Images, Icons, Fonts, etc.)
+- Utilize nomes descritivos e em inglês
+- Para ícones, considere usar recursos vetoriais (.svg) quando possível
+- Defina a propriedade "Build Action" como "Resource" no Visual Studio
+
+Para acessar estes recursos no XAML:
+```xml
+<Image Source="/Omnos.Desktop.App;component/Assets/Images/logo.png" />
+```
+
+Para acessar no código C#:
+```csharp
+var uri = new Uri("/Omnos.Desktop.App;component/Assets/Images/logo.png", UriKind.Relative);
+var image = new BitmapImage(uri);
+```
