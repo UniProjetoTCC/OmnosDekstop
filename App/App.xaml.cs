@@ -8,6 +8,10 @@ using System.Windows;
 
 namespace Omnos.Desktop.App
 {
+
+ 
+
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -26,17 +30,20 @@ namespace Omnos.Desktop.App
         {
             // Registrar ApiClient
             services.AddSingleton(new ApiClient.ApiClient("http://localhost:5000"));
-            
+
             // Registrar serviços
             services.AddSingleton<AuthService>();
             services.AddSingleton<Services.NavigationService>();
-            
+
             // Registrar Views
             services.AddTransient<LoginView>();
-            
+            services.AddTransient<TwoFactorView>(); // <-- ADICIONAR ESTA LINHA
+
             // Registrar ViewModels
             services.AddTransient<LoginViewModel>();
+            services.AddTransient<TwoFactorViewModel>(); // <-- ADICIONAR ESTA LINHA
         }
+
 
         protected override void OnStartup(StartupEventArgs e)
         {

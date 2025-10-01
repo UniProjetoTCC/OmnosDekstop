@@ -13,5 +13,13 @@ namespace Omnos.Desktop.ApiClient.Models.Auth
         
         [JsonPropertyName("expiration")]
         public DateTime Expiration { get; set; }
+
+        [JsonPropertyName("requiresTwoFactor")]
+        public bool TwoFactorRequired { get; set; }
+
+        [JsonPropertyName("email")]
+        public string Email { get; set; } = string.Empty;
+
+
     }
 }
