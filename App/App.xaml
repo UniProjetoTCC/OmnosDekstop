@@ -4,25 +4,13 @@
              xmlns:local="clr-namespace:Omnos.Desktop.App">
     <Application.Resources>
         <ResourceDictionary>
-            <!-- Colors -->
-            <Color x:Key="PrimaryColor">#2196F3</Color>
-            <Color x:Key="PrimaryDarkColor">#1976D2</Color>
-            <Color x:Key="AccentColor">#FF4081</Color>
-            <Color x:Key="TextPrimaryColor">#212121</Color>
-            <Color x:Key="TextSecondaryColor">#757575</Color>
-            <Color x:Key="DividerColor">#BDBDBD</Color>
-            
-            <!-- Brushes -->
-            <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
-            <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDarkColor}"/>
-            <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
-            <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
-            <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
-            <SolidColorBrush x:Key="DividerBrush" Color="{StaticResource DividerColor}"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Omnos.Desktop.App;component/Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             
             <!-- Button Style -->
             <Style x:Key="DefaultButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                <Setter Property="Background" Value="{StaticResource AccentColor}"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="Padding" Value="15,8"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -41,7 +29,7 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+                        <Setter Property="Background" Value="{StaticResource SecondaryColor}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>

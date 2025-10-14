@@ -1,8 +1,7 @@
-// App/ViewModels/LoginViewModel.cs
-
-using Microsoft.Extensions.DependencyInjection;
+using Omnos.Desktop.ApiClient.Models;
 using Omnos.Desktop.ApiClient.Models.Auth;
 using Omnos.Desktop.ApiClient.Services;
+using Omnos.Desktop.App.Interfaces;
 using Omnos.Desktop.App.Services;
 using Omnos.Desktop.App.Views;
 using Omnos.Desktop.Core.Mvvm;
@@ -12,8 +11,11 @@ using System.Windows.Input;
 
 namespace Omnos.Desktop.App.ViewModels
 {
-    public class LoginViewModel : ObservableObject
+    public class LoginViewModel : ObservableObject, INavigatable
     {
+        private readonly ApiClient.Services.AuthService _authService;
+        private readonly Services.SessionService _sessionService;
+        private readonly Services.NavigationService _navigationService;
         private string _email = string.Empty;
         private string _password = string.Empty;
         private string _errorMessage = string.Empty;
@@ -22,13 +24,23 @@ namespace Omnos.Desktop.App.ViewModels
         public string Email
         {
             get => _email;
-            set => SetProperty(ref _email, value);
+            set
+            {
+                SetProperty(ref _email, value);
+                OnPropertyChanged(nameof(CanLogin));
+                LoginCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public string Password
         {
             get => _password;
-            set => SetProperty(ref _password, value);
+            set
+            {
+                SetProperty(ref _password, value);
+                OnPropertyChanged(nameof(CanLogin));
+                LoginCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public string ErrorMessage
@@ -40,16 +52,20 @@ namespace Omnos.Desktop.App.ViewModels
         public bool IsBusy
         {
             get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
+            set
+            {
+                SetProperty(ref _isBusy, value);
+                OnPropertyChanged(nameof(CanLogin));
+                LoginCommand.RaiseCanExecuteChanged();
+            }
         }
-        private readonly AuthService _authService;
-        private readonly NavigationService _navigationService;
 
-        public ICommand LoginCommand { get; }
+        public RelayCommand LoginCommand { get; }
 
-        public LoginViewModel(AuthService authService, NavigationService navigationService)
+        public LoginViewModel(ApiClient.Services.AuthService authService, SessionService sessionService, Services.NavigationService navigationService)
         {
             _authService = authService;
+            _sessionService = sessionService;
             _navigationService = navigationService;
             LoginCommand = new RelayCommand(async _ => await LoginAsync(), _ => CanLogin());
         }
@@ -67,7 +83,7 @@ namespace Omnos.Desktop.App.ViewModels
 
                 if (response == null)
                 {
-                    ErrorMessage = "Não foi possível conectar ao servidor.";
+                    ErrorMessage = "NÃ£o foi possÃ­vel conectar ao servidor.";
                     return;
                 }
 
@@ -77,19 +93,33 @@ namespace Omnos.Desktop.App.ViewModels
                 }
                 else if (!string.IsNullOrEmpty(response.AccessToken))
                 {
-                    // LÓGICA DE NAVEGAÇÃO: Login completo, vamos para a tela principal!
-                    // TODO: Criar e navegar para a DashboardView ou tela principal
-                    System.Windows.MessageBox.Show("Login completo!");
+                    // Armazenar o token de acesso no SessionService
+                    _sessionService.Login(response.AccessToken, response.RefreshToken, response.Email);
+                    
+                    // Navegar para a tela principal
+                    _navigationService.NavigateTo<MainView>();
                 }
                 else
                 {
-                    ErrorMessage = "Credenciais inválidas. Por favor, tente novamente.";
+                    ErrorMessage = "Erro ao fazer login.";
                 }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Erro: {ex.Message}";
             }
             finally
             {
                 IsBusy = false;
             }
+        }
+
+        public void OnNavigatedTo(object parameter)
+        {
+            // Limpar os campos quando navegar para esta tela
+            Email = string.Empty;
+            Password = string.Empty;
+            ErrorMessage = string.Empty;
         }
     }
 }

@@ -1,0 +1,224 @@
+<UserControl x:Class="Omnos.Desktop.App.Views.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Omnos.Desktop.App.Views"
+             xmlns:converters="clr-namespace:Omnos.Desktop.App.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Omnos.Desktop.App;component/Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Conversor para destacar o item selecionado no menu -->
+            <converters:BoolToBackgroundConverter x:Key="BoolToBackgroundConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Sidebar - largura dinâmica baseada no estado de expansão -->
+            <ColumnDefinition Width="Auto"/>
+            <!-- Conteúdo principal -->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border x:Name="Sidebar" 
+                Background="{StaticResource SidebarBackground}" 
+                Width="{Binding SidebarWidth}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60"/>
+                    <!-- Logo/Ícone -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Botões de navegação -->
+                    <RowDefinition Height="*"/>
+                    <!-- Espaço flexível -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Botão de sair -->
+                </Grid.RowDefinitions>
+
+                <!-- Logo/Ícone da sidebar -->
+                <Grid Grid.Row="0">
+                    <!-- Logo quando a sidebar está expandida -->
+                    <Grid Visibility="{Binding SidebarLogoVisibility}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Logo -->
+                        <Image Grid.Column="0"
+                               Source="/Assets/omnos_icon.png" 
+                               Width="82" Height="32"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="10,0,0,0"/>
+                        
+                        <!-- Botão para fechar a sidebar quando expandida -->
+                        <Button Grid.Column="1"
+                                Command="{Binding ToggleSidebarCommand}"
+                                Style="{StaticResource SidebarCloseButtonStyle}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Margin="0,0,10,0">
+                            <TextBlock Text="&#xE8BB;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16"
+                                       Foreground="White"/>
+                        </Button>
+                    </Grid>
+                    
+                    <!-- Ícone quando a sidebar está retraída (clique nele para expandir) -->
+                    <Button Command="{Binding ToggleSidebarCommand}"
+                            Style="{StaticResource SidebarIconButtonStyle}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Visibility="{Binding SidebarIconVisibility}"
+                            Padding="0" Margin="0,10,0,10">
+                        <Image Source="/Assets/retract_omnos_icon.png" 
+                               Width="32" Height="32"/>
+                    </Button>
+                </Grid>
+
+                <!-- Menu de navegação - Parte superior -->
+                <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                    <!-- Botão Dashboard -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Dashboard">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Dashboard</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE80F;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Dashboard" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Estoque -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Stock">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Stock</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE7BF;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Estoque" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Vendas -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Sales">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Sales</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8A1;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Vendas" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Clientes -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Customers">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Customers</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE77B;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Clientes" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Configurações -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Settings">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Settings</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE713;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Configurações" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Botão Sair (na parte inferior) -->
+                <Button Grid.Row="3" 
+                        Style="{StaticResource SidebarButtonStyle}"
+                        Command="{Binding LogoutCommand}"
+                        Margin="0,0,0,10">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE7E8;" 
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="16" 
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Sair" 
+                                   Margin="15,0,0,0" 
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding SidebarTextVisibility}"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Área de conteúdo principal -->
+        <Grid Grid.Column="1" Background="{StaticResource BackgroundColor}">
+            <Frame x:Name="ContentFrame" 
+                   NavigationUIVisibility="Hidden"
+                   Background="{StaticResource BackgroundColor}"
+                   Margin="20"/>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,6 +1,7 @@
-﻿using Omnos.Desktop.ApiClient.Services;
+using Omnos.Desktop.ApiClient.Services;
 using Omnos.Desktop.App.Interfaces;
 using Omnos.Desktop.App.Services;
+using Omnos.Desktop.App.Views;
 using Omnos.Desktop.Core.Mvvm;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -34,14 +35,16 @@ namespace Omnos.Desktop.App.ViewModels
 
         public string Email { get; set; } = string.Empty; // Recebe o e-mail da tela de Login
 
-        private readonly AuthService _authService;
+        private readonly ApiClient.Services.AuthService _authService;
+        private readonly SessionService _sessionService;
         private readonly NavigationService _navigationService;
 
         public ICommand VerifyCommand { get; }
 
-        public TwoFactorViewModel(AuthService authService, NavigationService navigationService)
+        public TwoFactorViewModel(ApiClient.Services.AuthService authService, SessionService sessionService, NavigationService navigationService)
         {
             _authService = authService;
+            _sessionService = sessionService;
             _navigationService = navigationService;
 
             VerifyCommand = new RelayCommand(async _ => await VerifyCodeAsync(), _ => CanVerify());
@@ -59,8 +62,11 @@ namespace Omnos.Desktop.App.ViewModels
             if (response != null && !string.IsNullOrEmpty(response.AccessToken))
             {
                 // SUCESSO! Código 2FA correto, token final recebido.
-                // TODO: Navegar para a tela principal (DashboardView)
-                System.Windows.MessageBox.Show("Autenticação 2FA bem-sucedida!");
+                // Armazenar o token de acesso no SessionService
+                _sessionService.Login(response.AccessToken, response.RefreshToken, response.Email);
+                
+                // Navegar para a tela principal
+                _navigationService.NavigateTo<MainView>();
             }
             else
             {

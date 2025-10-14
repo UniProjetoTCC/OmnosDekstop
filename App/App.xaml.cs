@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Omnos.Desktop.ApiClient;
 using Omnos.Desktop.ApiClient.Services;
+using Omnos.Desktop.App.Services;
 using Omnos.Desktop.App.ViewModels;
 using Omnos.Desktop.App.Views;
 using System;
@@ -8,16 +9,14 @@ using System.Windows;
 
 namespace Omnos.Desktop.App
 {
-
- 
-
-
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
-        private IServiceProvider _serviceProvider;
+        private readonly ServiceProvider _serviceProvider;
+        
+        public ServiceProvider ServiceProvider => _serviceProvider;
 
         public App()
         {
@@ -28,24 +27,32 @@ namespace Omnos.Desktop.App
 
         private void ConfigureServices(IServiceCollection services)
         {
+            // Registrar HttpClient
+            services.AddSingleton<System.Net.Http.HttpClient>();
+            
             // Registrar ApiClient
             services.AddSingleton(new ApiClient.ApiClient("http://localhost:5000"));
 
             // Registrar serviços
-            services.AddSingleton<AuthService>();
+            services.AddSingleton<ApiClient.Services.AuthService>();
+            services.AddSingleton<SessionService>();
             services.AddSingleton<Services.NavigationService>();
 
             // Registrar Views
             services.AddTransient<LoginView>();
-            services.AddTransient<TwoFactorView>(); // <-- ADICIONAR ESTA LINHA
+            services.AddTransient<TwoFactorView>();
+            services.AddTransient<MainView>();
 
             // Registrar ViewModels
             services.AddTransient<LoginViewModel>();
-            services.AddTransient<TwoFactorViewModel>(); // <-- ADICIONAR ESTA LINHA
+            services.AddTransient<TwoFactorViewModel>();
+            services.AddTransient<MainViewModel>();
 
-            services.AddTransient<StockService>();
-            services.AddTransient<StockViewModel>();
-            services.AddTransient<StockView>();
+            // Registrar serviços de negócio
+            services.AddTransient<ApiClient.Services.StockService>();
+
+            // Registrar páginas
+            services.AddTransient<Views.Pages.StockPage>();
         }
 
 
@@ -55,15 +62,16 @@ namespace Omnos.Desktop.App
             {
                 base.OnStartup(e);
 
-                // Obter o MainViewModel do contêiner de DI
-                var mainViewModel = new MainViewModel();
+                // Obter serviços do contêiner de DI
+                var navigationService = _serviceProvider.GetRequiredService<Services.NavigationService>();
+                var sessionService = _serviceProvider.GetRequiredService<SessionService>();
+                var mainViewModel = new MainViewModel(navigationService, sessionService);
                 
                 // Inicializar e mostrar a janela principal
                 var mainWindow = new MainWindow(mainViewModel);
                 mainWindow.Show();
                 
                 // Inicializar o NavigationService
-                var navigationService = _serviceProvider.GetRequiredService<Services.NavigationService>();
                 navigationService.Initialize(mainWindow.ContentArea);
                 
                 // Obter o LoginViewModel e configurar com o NavigationService

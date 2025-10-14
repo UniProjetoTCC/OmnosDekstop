@@ -1,8 +1,8 @@
 using System;
 
-namespace Omnos.Desktop.App.Models
+namespace Omnos.Desktop.ApiClient.Models.Stock
 {
-    public class StockModels
+    public class StockModel
     {
         public Guid Id { get; set; }
         public string ProductName { get; set; } = string.Empty;
