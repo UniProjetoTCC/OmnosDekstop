@@ -1,22 +1,20 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
 namespace Omnos.Desktop.App.Converters
 {
-    public class BooleanToVisibilityConverter : IValueConverter
+    public class InvertedBooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool b && b) return Visibility.Visible;
-            if (value is string s && !string.IsNullOrEmpty(s)) return Visibility.Visible;
-            return Visibility.Collapsed;
+            return (value is bool v && v) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is Visibility v && v == Visibility.Visible;
+            throw new NotImplementedException();
         }
     }
 }

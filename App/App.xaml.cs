@@ -1,10 +1,12 @@
+// App/App.xaml.cs
+
 using Microsoft.Extensions.DependencyInjection;
-using Omnos.Desktop.ApiClient;
 using Omnos.Desktop.ApiClient.Services;
 using Omnos.Desktop.App.Services;
 using Omnos.Desktop.App.ViewModels;
 using Omnos.Desktop.App.Views;
 using System;
+using System.Net.Http; // Adicione este using
 using System.Windows;
 
 namespace Omnos.Desktop.App
@@ -54,7 +56,6 @@ namespace Omnos.Desktop.App
             // Registrar páginas
             services.AddTransient<Views.Pages.StockPage>();
         }
-
 
         protected override void OnStartup(StartupEventArgs e)
         {

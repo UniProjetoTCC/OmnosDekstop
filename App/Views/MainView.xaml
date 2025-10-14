@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Omnos.Desktop.App.Views"
+             xmlns:viewmodels="clr-namespace:Omnos.Desktop.App.ViewModels"
              xmlns:converters="clr-namespace:Omnos.Desktop.App.Converters"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="900">
+             d:DesignHeight="720" d:DesignWidth="1280">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -53,12 +55,13 @@
                         </Grid.ColumnDefinitions>
                         
                         <!-- Logo -->
-                        <Image Grid.Column="0"
-                               Source="/Assets/omnos_icon.png" 
-                               Width="82" Height="32"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Margin="10,0,0,0"/>
+                        <svgc:SvgViewbox Grid.Column="0"
+                                        Source="/Assets/full_icon.svg" 
+                                        Width="82" Height="32"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Margin="10,0,0,0"
+                                        Visibility="{Binding SidebarLogoVisibility}"/>
                         
                         <!-- Botão para fechar a sidebar quando expandida -->
                         <Button Grid.Column="1"
@@ -81,8 +84,8 @@
                             VerticalAlignment="Center"
                             Visibility="{Binding SidebarIconVisibility}"
                             Padding="0" Margin="0,10,0,10">
-                        <Image Source="/Assets/retract_omnos_icon.png" 
-                               Width="32" Height="32"/>
+                        <svgc:SvgViewbox Source="/Assets/partial_icon.svg" 
+                                       Width="32" Height="32"/>
                     </Button>
                 </Grid>
 

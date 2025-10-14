@@ -4,7 +4,7 @@
     <!-- Cores principais do tema -->
     <SolidColorBrush x:Key="PrimaryColor" Color="#1E1E2D"/>
     <SolidColorBrush x:Key="SecondaryColor" Color="#2A2A3C"/>
-    <SolidColorBrush x:Key="AccentColor" Color="#6366F1"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="#6366F1"/>
     
     <!-- Cores de texto -->
     <SolidColorBrush x:Key="TextPrimaryColor" Color="#FFFFFF"/>
