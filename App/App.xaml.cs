@@ -42,6 +42,10 @@ namespace Omnos.Desktop.App
             // Registrar ViewModels
             services.AddTransient<LoginViewModel>();
             services.AddTransient<TwoFactorViewModel>(); // <-- ADICIONAR ESTA LINHA
+
+            services.AddTransient<StockService>();
+            services.AddTransient<StockViewModel>();
+            services.AddTransient<StockView>();
         }
 
 
