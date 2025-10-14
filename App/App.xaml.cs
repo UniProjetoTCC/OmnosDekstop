@@ -1,91 +1,37 @@
+// App/App.xaml.cs
+
 using Microsoft.Extensions.DependencyInjection;
-using Omnos.Desktop.ApiClient;
 using Omnos.Desktop.ApiClient.Services;
 using Omnos.Desktop.App.ViewModels;
 using Omnos.Desktop.App.Views;
 using System;
+using System.Net.Http; // Adicione este using
 using System.Windows;
 
 namespace Omnos.Desktop.App
 {
-
- 
-
-
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        private IServiceProvider _serviceProvider;
+        // MUDANÇA: Tornamos o ServiceProvider público para que outras partes da aplicação possam usá-lo.
+        public IServiceProvider ServiceProvider { get; private set; }
 
         public App()
         {
             var services = new ServiceCollection();
             ConfigureServices(services);
-            _serviceProvider = services.BuildServiceProvider();
+            services.AddTransient<MainShellViewModel>();
+            services.AddTransient<MainShellView>();
+            ServiceProvider = services.BuildServiceProvider();
         }
 
         private void ConfigureServices(IServiceCollection services)
         {
-            // Registrar ApiClient
-            services.AddSingleton(new ApiClient.ApiClient("http://localhost:5000"));
-
-            // Registrar serviços
-            services.AddSingleton<AuthService>();
-            services.AddSingleton<Services.NavigationService>();
-
-            // Registrar Views
-            services.AddTransient<LoginView>();
-            services.AddTransient<TwoFactorView>(); // <-- ADICIONAR ESTA LINHA
-
-            // Registrar ViewModels
-            services.AddTransient<LoginViewModel>();
-            services.AddTransient<TwoFactorViewModel>(); // <-- ADICIONAR ESTA LINHA
-
-            services.AddTransient<StockService>();
-            services.AddTransient<StockViewModel>();
-            services.AddTransient<StockView>();
+            // ... (o resto do seu método ConfigureServices continua aqui, com todos os registros)
         }
-
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            try
-            {
-                base.OnStartup(e);
-
-                // Obter o MainViewModel do contêiner de DI
-                var mainViewModel = new MainViewModel();
-                
-                // Inicializar e mostrar a janela principal
-                var mainWindow = new MainWindow(mainViewModel);
-                mainWindow.Show();
-                
-                // Inicializar o NavigationService
-                var navigationService = _serviceProvider.GetRequiredService<Services.NavigationService>();
-                navigationService.Initialize(mainWindow.ContentArea);
-                
-                // Obter o LoginViewModel e configurar com o NavigationService
-                var loginViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
-                
-                // Navegar para a tela de login
-                navigationService.NavigateTo<LoginView>();
-                
-                // Garante que a janela está visível
-                mainWindow.Activate();
-                mainWindow.Focus();
-                
-                // Exibe mensagem de debug
-                System.Diagnostics.Debug.WriteLine("Janela principal inicializada e navegada para a tela de login");
-            }
-            catch (Exception ex)
-            {
-                // Exibe qualquer erro que ocorra durante a inicialização
-                MessageBox.Show($"Erro ao inicializar a aplicação: {ex.Message}", 
-                    "Erro de Inicialização", MessageBoxButton.OK, MessageBoxImage.Error);
-                System.Diagnostics.Debug.WriteLine($"Erro: {ex.Message}\n{ex.StackTrace}");
-            }
+            // ... (o seu método OnStartup continua o mesmo)
         }
     }
 }

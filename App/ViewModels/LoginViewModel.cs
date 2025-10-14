@@ -1,13 +1,14 @@
-// App/ViewModels/LoginViewModel.cs
+Ôªø
+using Microsoft.Extensions.DependencyInjection; 
+using Omnos.Desktop.App.Views;
 
-using Microsoft.Extensions.DependencyInjection;
 using Omnos.Desktop.ApiClient.Models.Auth;
 using Omnos.Desktop.ApiClient.Services;
 using Omnos.Desktop.App.Services;
-using Omnos.Desktop.App.Views;
 using Omnos.Desktop.Core.Mvvm;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Omnos.Desktop.App.ViewModels
@@ -15,75 +16,126 @@ namespace Omnos.Desktop.App.ViewModels
     public class LoginViewModel : ObservableObject
     {
         private string _email = string.Empty;
-        private string _password = string.Empty;
-        private string _errorMessage = string.Empty;
-        private bool _isBusy;
-
         public string Email
         {
             get => _email;
             set => SetProperty(ref _email, value);
         }
 
+        private string _password = string.Empty;
         public string Password
         {
             get => _password;
-            set => SetProperty(ref _password, value);
+            set
+            {
+                SetProperty(ref _password, value);
+                if (IsPasswordVisible)
+                {
+                    PlainTextPassword = value;
+                }
+            }
         }
 
+        private string _plainTextPassword = string.Empty;
+        public string PlainTextPassword
+        {
+            get => _plainTextPassword;
+            set
+            {
+                SetProperty(ref _plainTextPassword, value);
+                Password = value;
+            }
+        }
+
+        private bool _isPasswordVisible;
+        public bool IsPasswordVisible
+        {
+            get => _isPasswordVisible;
+            set => SetProperty(ref _isPasswordVisible, value);
+        }
+
+        private string _errorMessage = string.Empty;
         public string ErrorMessage
         {
             get => _errorMessage;
             set => SetProperty(ref _errorMessage, value);
         }
 
+        private bool _isBusy;
         public bool IsBusy
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        private readonly AuthService _authService;
-        private readonly NavigationService _navigationService;
 
         public ICommand LoginCommand { get; }
+        public ICommand TogglePasswordVisibilityCommand { get; }
+        public ICommand ForgotPasswordCommand { get; }
+
+        private readonly AuthService _authService;
+        private readonly NavigationService _navigationService;
 
         public LoginViewModel(AuthService authService, NavigationService navigationService)
         {
             _authService = authService;
             _navigationService = navigationService;
-            LoginCommand = new RelayCommand(async _ => await LoginAsync(), _ => CanLogin());
-        }
 
-        private bool CanLogin() => !IsBusy && !string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(Password);
+            LoginCommand = new RelayCommand(async _ => await LoginAsync(), _ => !IsBusy);
+
+            TogglePasswordVisibilityCommand = new RelayCommand(_ =>
+            {
+                IsPasswordVisible = !IsPasswordVisible;
+                if (IsPasswordVisible)
+                {
+                    PlainTextPassword = Password;
+                }
+            });
+
+            ForgotPasswordCommand = new RelayCommand(_ =>
+            {
+                MessageBox.Show("Funcionalidade de recupera√ß√£o de senha a ser implementada.", "Recuperar Senha");
+            });
+        }
 
         private async Task LoginAsync()
         {
-            IsBusy = true;
             ErrorMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "Preencha todos os campos.";
+                return;
+            }
+
+            IsBusy = true;
 
             try
             {
-                var response = await _authService.LoginAsync(new LoginRequest { Email = Email, Password = Password });
+                var request = new LoginRequest { Email = Email, Password = Password };
+                var response = await _authService.LoginAsync(request);
 
                 if (response == null)
                 {
-                    ErrorMessage = "N„o foi possÌvel conectar ao servidor.";
+                    ErrorMessage = "N√£o foi poss√≠vel conectar ao servidor.";
                     return;
                 }
 
-                if (response.TwoFactorRequired)
+                if (!string.IsNullOrEmpty(response.AccessToken))
                 {
-                    _navigationService.NavigateTo<TwoFactorView>(response.Email);
-                }
-                else if (!string.IsNullOrEmpty(response.AccessToken))
-                {
-                    // L”GICA DE NAVEGA«√O: Login completo, vamos para a tela principal!
-                    // TODO: Criar e navegar para a DashboardView ou tela principal
-                    System.Windows.MessageBox.Show("Login completo!");
+                    if (response.TwoFactorRequired)
+                    {
+                        var twoFactorVM = ((App)Application.Current).ServiceProvider.GetRequiredService<TwoFactorViewModel>();
+                        twoFactorVM.Email = response.Email;
+                        _navigationService.NavigateTo<TwoFactorView>();
+                    }
+                    else
+                    {
+                        _navigationService.NavigateTo<MainShellView>();
+                    }
                 }
                 else
                 {
-                    ErrorMessage = "Credenciais inv·lidas. Por favor, tente novamente.";
+                    ErrorMessage = "Usu√°rio ou senha incorretos.";
                 }
             }
             finally

@@ -1,9 +1,11 @@
 <Application x:Class="Omnos.Desktop.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Omnos.Desktop.App">
+             xmlns:local="clr-namespace:Omnos.Desktop.App"
+              xmlns:converters="clr-namespace:Omnos.Desktop.App.Converters">
     <Application.Resources>
         <ResourceDictionary>
+            <converters:BooleanToWidthConverter x:Key="BooleanToWidthConverter"/>
             <!-- Colors -->
             <Color x:Key="PrimaryColor">#2196F3</Color>
             <Color x:Key="PrimaryDarkColor">#1976D2</Color>
