@@ -59,11 +59,11 @@ namespace Omnos.Desktop.App.ViewModels
 
             var response = await _authService.VerifyTwoFactorCodeAsync(Email, VerificationCode);
 
-            if (response != null && !string.IsNullOrEmpty(response.AccessToken))
+            if (response != null && !string.IsNullOrEmpty(response.Token))
             {
                 // SUCESSO! Código 2FA correto, token final recebido.
                 // Armazenar o token de acesso no SessionService
-                _sessionService.Login(response.AccessToken, response.RefreshToken, response.Email);
+                _sessionService.Login(response.Token, response.RefreshToken, response.Email);
                 
                 // Navegar para a tela principal
                 _navigationService.NavigateTo<MainView>();

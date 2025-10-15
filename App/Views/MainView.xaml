@@ -112,21 +112,21 @@
                         </StackPanel>
                     </Button>
 
-                    <!-- Botão Estoque -->
+                    <!-- Botão Relatórios -->
                     <Button Style="{StaticResource SidebarButtonStyle}"
                             Command="{Binding NavigateToCommand}"
-                            CommandParameter="Stock">
+                            CommandParameter="Reports">
                         <Button.Background>
                             <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
-                                <Binding.ConverterParameter>Stock</Binding.ConverterParameter>
+                                <Binding.ConverterParameter>Reports</Binding.ConverterParameter>
                             </Binding>
                         </Button.Background>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE7BF;" 
+                            <TextBlock Text="&#xE9D9;" 
                                        FontFamily="Segoe MDL2 Assets" 
                                        FontSize="16" 
                                        VerticalAlignment="Center"/>
-                            <TextBlock Text="Estoque" 
+                            <TextBlock Text="Relatórios" 
                                        Margin="15,0,0,0" 
                                        VerticalAlignment="Center"
                                        Visibility="{Binding SidebarTextVisibility}"/>
@@ -143,11 +143,116 @@
                             </Binding>
                         </Button.Background>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8A1;" 
+                            <TextBlock Text="&#xE7BF;" 
                                        FontFamily="Segoe MDL2 Assets" 
                                        FontSize="16" 
                                        VerticalAlignment="Center"/>
                             <TextBlock Text="Vendas" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Histórico de Vendas -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="SalesHistory">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>SalesHistory</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE81C;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Histórico de Vendas" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Inventário/Produtos -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Products">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Products</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xECCD;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Produtos" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Categorias -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Categories">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Categories</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8FD;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Categorias" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Controle de Estoque -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Stock">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Stock</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8A1;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Controle de Estoque" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Movimentações de Estoque -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="StockMovements">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>StockMovements</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8AB;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Movimentações de Estoque" 
                                        Margin="15,0,0,0" 
                                        VerticalAlignment="Center"
                                        Visibility="{Binding SidebarTextVisibility}"/>
@@ -169,6 +274,48 @@
                                        FontSize="16" 
                                        VerticalAlignment="Center"/>
                             <TextBlock Text="Clientes" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Programas de Fidelidade -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="LoyaltyPrograms">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>LoyaltyPrograms</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE734;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Programas de Fidelidade" 
+                                       Margin="15,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SidebarTextVisibility}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Botão Promoções -->
+                    <Button Style="{StaticResource SidebarButtonStyle}"
+                            Command="{Binding NavigateToCommand}"
+                            CommandParameter="Promotions">
+                        <Button.Background>
+                            <Binding Path="SelectedMenuItem" Converter="{StaticResource BoolToBackgroundConverter}">
+                                <Binding.ConverterParameter>Promotions</Binding.ConverterParameter>
+                            </Binding>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE945;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Promoções" 
                                        Margin="15,0,0,0" 
                                        VerticalAlignment="Center"
                                        Visibility="{Binding SidebarTextVisibility}"/>
@@ -221,7 +368,7 @@
             <Frame x:Name="ContentFrame" 
                    NavigationUIVisibility="Hidden"
                    Background="{StaticResource BackgroundColor}"
-                   Margin="20"/>
+                   Margin="10"/>
         </Grid>
     </Grid>
 </UserControl>

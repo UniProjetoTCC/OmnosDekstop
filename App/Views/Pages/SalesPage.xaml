@@ -1,0 +1,46 @@
+<Page x:Class="Omnos.Desktop.App.Views.Pages.SalesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      d:DesignHeight="700" d:DesignWidth="1100"
+      Background="#F5F5F5"
+      Title="Vendas">
+
+    <Grid>
+        <Border Background="White"
+                CornerRadius="10"
+                Padding="24"
+                Margin="1,1,1,1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Direction="315" Opacity="0.10" ShadowDepth="5"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Titulo -->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,12">
+                    <TextBlock Text="Vendas"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Foreground="#333"/>
+                    <TextBlock Text="  &#8226;  registro e controle"
+                               Foreground="#888"
+                               Margin="6,3,0,0"/>
+                </StackPanel>
+
+                <!-- Conteúdo -->
+                <TextBlock Grid.Row="1" 
+                           Text="Conteúdo de Vendas" 
+                           FontSize="18" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

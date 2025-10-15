@@ -14,7 +14,7 @@ namespace Omnos.Desktop.App.ViewModels
         private readonly SessionService _sessionService;
         private object? _currentView;
         private bool _isSidebarExpanded = true;
-        private double _sidebarWidth = 160;
+        private double _sidebarWidth = 220;
         private string _selectedMenuItem = "";
 
         public object? CurrentView
@@ -30,7 +30,7 @@ namespace Omnos.Desktop.App.ViewModels
             {
                 if (SetProperty(ref _isSidebarExpanded, value))
                 {
-                    SidebarWidth = value ? 160 : 50;
+                    SidebarWidth = value ? 220 : 50;
                     OnPropertyChanged(nameof(SidebarTextVisibility));
                     OnPropertyChanged(nameof(SidebarLogoVisibility));
                     OnPropertyChanged(nameof(SidebarIconVisibility));
@@ -61,6 +61,7 @@ namespace Omnos.Desktop.App.ViewModels
         public ICommand ToggleSidebarCommand { get; }
         public ICommand NavigateToCommand { get; }
         public ICommand LogoutCommand { get; }
+        public ICommand RefreshTokenCommand { get; }
 
         public MainViewModel(NavigationService navigationService, SessionService sessionService)
         {
@@ -70,6 +71,21 @@ namespace Omnos.Desktop.App.ViewModels
             ToggleSidebarCommand = new RelayCommand(_ => IsSidebarExpanded = !IsSidebarExpanded);
             NavigateToCommand = new RelayCommand(NavigateTo);
             LogoutCommand = new RelayCommand(_ => Logout());
+            RefreshTokenCommand = new RelayCommand(async _ => await RefreshToken());
+        }
+
+        private async Task RefreshToken()
+        {
+            System.Diagnostics.Debug.WriteLine("Tentando renovar o token manualmente...");
+            bool success = await _sessionService.RefreshTokenAsync();
+            if (success)
+            {
+                MessageBox.Show("O token de autenticação foi renovado com sucesso.", "Sucesso na Renovação", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Não foi possível renovar o token. A sua sessão pode ter expirado.", "Erro de Renovação", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void NavigateTo(object? parameter)
@@ -82,20 +98,41 @@ namespace Omnos.Desktop.App.ViewModels
                 // Navega para a view correspondente
                 switch (destination)
                 {
-                    case "Stock":
-                        NavigateToPage?.Invoke(typeof(StockPage));
-                        break;
                     case "Dashboard":
-                        // Implementar quando houver uma DashboardView
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.DashboardPage));
+                        break;
+                    case "Reports":
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.ReportsPage));
                         break;
                     case "Sales":
-                        // Implementar quando houver uma SalesView
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.SalesPage));
+                        break;
+                    case "SalesHistory":
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.SalesHistoryPage));
+                        break;
+                    case "Products":
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.ProductsPage));
+                        break;
+                    case "Categories":
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.CategoriesPage));
+                        break;
+                    case "Stock":
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.StockPage));
+                        break;
+                    case "StockMovements":
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.StockMovementsPage));
                         break;
                     case "Customers":
-                        // Implementar quando houver uma CustomersView
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.CustomersPage));
+                        break;
+                    case "LoyaltyPrograms":
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.LoyaltyProgramsPage));
+                        break;
+                    case "Promotions":
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.PromotionsPage));
                         break;
                     case "Settings":
-                        // Implementar quando houver uma SettingsView
+                        NavigateToPage?.Invoke(typeof(Omnos.Desktop.App.Views.Pages.SettingsPage));
                         break;
                 }
             }

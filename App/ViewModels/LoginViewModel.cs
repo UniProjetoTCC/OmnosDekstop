@@ -137,10 +137,10 @@ namespace Omnos.Desktop.App.ViewModels
                 {
                     _navigationService.NavigateTo<TwoFactorView>(response.Email);
                 }
-                else if (!string.IsNullOrEmpty(response.AccessToken))
+                else if (!string.IsNullOrEmpty(response.Token))
                 {
                     // Armazenar o token de acesso no SessionService
-                    _sessionService.Login(response.AccessToken, response.RefreshToken, response.Email);
+                    _sessionService.Login(response.Token, response.RefreshToken, response.Email);
                     
                     // Navegar para a tela principal
                     _navigationService.NavigateTo<MainView>();

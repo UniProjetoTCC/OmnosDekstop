@@ -53,7 +53,7 @@
         <Border Background="White"
                 CornerRadius="10"
                 Padding="24"
-                Margin="12,12,12,12">
+                Margin="1,1,1,1">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="15" Direction="315" Opacity="0.10" ShadowDepth="5"/>
             </Border.Effect>

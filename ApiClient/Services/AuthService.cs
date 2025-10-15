@@ -1,31 +1,43 @@
 using Omnos.Desktop.ApiClient.Models.Auth;
 using System;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Omnos.Desktop.ApiClient.Services
 {
     public class AuthService
     {
         private readonly ApiClient _apiClient;
-
+        private System.Timers.Timer _tokenRenewalTimer;
+        
+        // Eventos para notificar sobre o estado da autentica√ß√£o
+        public event EventHandler? TokenRenewed;
+        public event EventHandler? TokenRenewalFailed;
+        
+        // Propriedades para armazenar informa√ß√µes do token
+        public string? Token { get; private set; }
+        public string? RefreshToken { get; private set; }
+        public DateTime TokenExpiration { get; private set; }
+        
         public AuthService(ApiClient apiClient)
         {
             _apiClient = apiClient;
+            _tokenRenewalTimer = new System.Timers.Timer();
+            _tokenRenewalTimer.Elapsed += TokenRenewalTimer_Elapsed;
         }
 
-        // Este mÈtodo apenas tenta logar e retorna a resposta da API.
-        // A responsabilidade de decidir o que fazer com a resposta È do ViewModel.
+        // Este m√©todo apenas tenta logar e retorna a resposta da API.
+        // A responsabilidade de decidir o que fazer com a resposta √© do ViewModel.
         public async Task<TokenResponse?> LoginAsync(LoginRequest loginRequest)
         {
             try
             {
                 var response = await _apiClient.PostAsync<LoginRequest, TokenResponse>("user/login", loginRequest);
-
-                // Se o login foi bem-sucedido e N√O requer 2FA, j· podemos guardar o token.
-                if (response != null && !response.TwoFactorRequired && !string.IsNullOrEmpty(response.AccessToken))
+                
+                // Se o login foi bem-sucedido e N√ÉO requer 2FA, j√° podemos guardar o token.
+                if (response != null && !response.TwoFactorRequired && !string.IsNullOrEmpty(response.Token))
                 {
-                    _apiClient.SetAuthToken(response.AccessToken);
-                    // Aqui vocÍ pode adicionar a lÛgica para salvar o Refresh Token e a expiraÁ„o para login autom·tico no futuro.
+                    SaveTokenInformation(response);
                 }
 
                 return response;
@@ -37,19 +49,17 @@ namespace Omnos.Desktop.ApiClient.Services
             }
         }
 
-        // NOVO M…TODO: Para verificar o cÛdigo 2FA
         public async Task<TokenResponse?> VerifyTwoFactorCodeAsync(string email, string code)
         {
             try
             {
                 var request = new Verify2FARequest { Email = email, Code = code };
                 var response = await _apiClient.PostAsync<Verify2FARequest, TokenResponse>("user/verify2fa", request);
-
-                // Se o cÛdigo 2FA estiver correto, a API retornar· o token final.
-                if (response != null && !string.IsNullOrEmpty(response.AccessToken))
+                
+                // Se o c√≥digo 2FA estiver correto, a API retornar√° o token final.
+                if (response != null && !string.IsNullOrEmpty(response.Token))
                 {
-                    _apiClient.SetAuthToken(response.AccessToken);
-                    // Salvar tambÈm o Refresh Token para login autom·tico.
+                    SaveTokenInformation(response);
                 }
 
                 return response;
@@ -60,11 +70,94 @@ namespace Omnos.Desktop.ApiClient.Services
                 return null;
             }
         }
+        
+        public async Task<bool> RefreshTokenAsync()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Token) || string.IsNullOrEmpty(RefreshToken))
+                {
+                    return false;
+                }
+                
+                var request = new TokenRequest 
+                { 
+                    Token = Token,
+                    RefreshToken = RefreshToken
+                };
+                
+                var response = await _apiClient.PostAsync<TokenRequest, TokenResponse>("user/refreshtoken", request);
+                
+                if (response != null && !string.IsNullOrEmpty(response.Token))
+                {
+                    SaveTokenInformation(response);
+                    TokenRenewed?.Invoke(this, EventArgs.Empty);
+                    return true;
+                }
+                
+                return false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO EM RefreshTokenAsync: {ex.Message}");
+                TokenRenewalFailed?.Invoke(this, EventArgs.Empty);
+                return false;
+            }
+        }
+        
+        // M√©todo para salvar as informa√ß√µes do token e configurar o timer para renova√ß√£o
+        private void SaveTokenInformation(TokenResponse response)
+        {
+            Token = response.Token;
+            RefreshToken = response.RefreshToken;
+            TokenExpiration = response.Expiration;
+            
+            _apiClient.SetAuthToken(Token);
+            
+            // Configurar o timer para renovar o token 10 minutos antes da expira√ß√£o
+            SetupTokenRenewalTimer();
+        }
+        
+        // Configurar o timer para renovar o token automaticamente
+        private void SetupTokenRenewalTimer()
+        {
+            _tokenRenewalTimer.Stop();
+            
+            // Calcular o tempo at√© 10 minutos antes da expira√ß√£o
+            var timeUntilRenewal = TokenExpiration.AddMinutes(-10) - DateTime.UtcNow;
+            
+            // Se o token j√° est√° pr√≥ximo de expirar ou j√° expirou, renovar imediatamente
+            if (timeUntilRenewal.TotalMinutes <= 0)
+            {
+                Task.Run(async () => await RefreshTokenAsync());
+                return;
+            }
+            
+            // Configurar o timer para disparar 10 minutos antes da expira√ß√£o
+            _tokenRenewalTimer.Interval = timeUntilRenewal.TotalMilliseconds;
+            _tokenRenewalTimer.Start();
+        }
+        
+        // Evento disparado quando o timer de renova√ß√£o √© acionado
+        private async void TokenRenewalTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        {
+            _tokenRenewalTimer.Stop();
+            await RefreshTokenAsync();
+        }
 
         public void Logout()
         {
+            _tokenRenewalTimer.Stop();
             _apiClient.ClearAuthToken();
-            // Limpar quaisquer tokens salvos para login autom·tico.
+            Token = string.Empty;
+            RefreshToken = string.Empty;
+            TokenExpiration = DateTime.MinValue;
+        }
+        
+        // Verifica se o usu√°rio est√° autenticado
+        public bool IsAuthenticated()
+        {
+            return !string.IsNullOrEmpty(Token) && TokenExpiration > DateTime.UtcNow;
         }
     }
 }

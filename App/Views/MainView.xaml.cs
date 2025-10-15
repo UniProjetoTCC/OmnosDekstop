@@ -1,4 +1,5 @@
 using Omnos.Desktop.App.ViewModels;
+using Omnos.Desktop.App.Views.Pages;
 using System;
 using System.Windows.Controls;
 
@@ -26,9 +27,8 @@ namespace Omnos.Desktop.App.Views
 
         private void MainView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            // Navega para a página inicial (Stock) quando a view é carregada
-            NavigateToPage(typeof(Pages.StockPage));
-            _viewModel.SelectedMenuItem = "Stock";
+            NavigateToPage(typeof(Omnos.Desktop.App.Views.Pages.DashboardPage));
+            _viewModel.SelectedMenuItem = "Dashboard";
         }
 
         // Método para navegar para uma página no Frame
@@ -36,8 +36,18 @@ namespace Omnos.Desktop.App.Views
         {
             if (pageType != null)
             {
-                // Cria uma instância da página
-                var page = Activator.CreateInstance(pageType) as Page;
+                Page page;
+                // Caso especial para a DashboardPage, que precisa do ViewModel
+                if (pageType == typeof(DashboardPage))
+                {
+                    page = new DashboardPage(_viewModel);
+                }
+                else
+                {
+                    // Cria instâncias para as outras páginas normalmente
+                    page = Activator.CreateInstance(pageType) as Page;
+                }
+
                 if (page != null)
                 {
                     // Navega para a página no Frame

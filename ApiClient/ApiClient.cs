@@ -54,19 +54,10 @@ namespace Omnos.Desktop.ApiClient
             {
                 var jsonBody = JsonSerializer.Serialize(data, _serializerOptions);
 
-                System.Diagnostics.Debug.WriteLine("================ INICIANDO REQUISIÇÃO HTTP ================");
-                System.Diagnostics.Debug.WriteLine($"HORÁRIO: {DateTime.Now:HH:mm:ss}");
-                System.Diagnostics.Debug.WriteLine($"MÉTODO: POST");
-                System.Diagnostics.Debug.WriteLine($"URL: {_httpClient.BaseAddress}{endpoint}");
-                System.Diagnostics.Debug.WriteLine("CABEÇALHOS (PADRÃO):");
                 foreach (var header in _httpClient.DefaultRequestHeaders)
                 {
                     System.Diagnostics.Debug.WriteLine($"  {header.Key}: {string.Join(", ", header.Value)}");
                 }
-                System.Diagnostics.Debug.WriteLine("CORPO (BODY) DA REQUISIÇÃO:");
-                System.Diagnostics.Debug.WriteLine(jsonBody);
-                System.Diagnostics.Debug.WriteLine("==========================================================");
-
 
                 var response = await _httpClient.PostAsJsonAsync(endpoint, data, _serializerOptions);
 
