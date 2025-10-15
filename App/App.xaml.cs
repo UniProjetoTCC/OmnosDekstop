@@ -44,11 +44,17 @@ namespace Omnos.Desktop.App
             services.AddTransient<LoginView>();
             services.AddTransient<TwoFactorView>();
             services.AddTransient<MainView>();
+            services.AddTransient<ForgotPasswordView>();
+            services.AddTransient<ResetPasswordTokenView>();
+            services.AddTransient<ResetPasswordView>();
 
             // Registrar ViewModels
             services.AddTransient<LoginViewModel>();
             services.AddTransient<TwoFactorViewModel>();
             services.AddTransient<MainViewModel>();
+            services.AddTransient<ForgotPasswordViewModel>();
+            services.AddTransient<ResetPasswordTokenViewModel>();
+            services.AddTransient<ResetPasswordViewModel>();
 
             // Registrar serviços de negócio
             services.AddTransient<ApiClient.Services.StockService>();

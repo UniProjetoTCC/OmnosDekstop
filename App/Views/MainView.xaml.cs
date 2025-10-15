@@ -45,7 +45,7 @@ namespace Omnos.Desktop.App.Views
                 else
                 {
                     // Cria instâncias para as outras páginas normalmente
-                    page = Activator.CreateInstance(pageType) as Page;
+                    page = Activator.CreateInstance(pageType) as Page ?? throw new InvalidOperationException($"Não foi possível criar uma instância de {pageType.Name}");
                 }
 
                 if (page != null)

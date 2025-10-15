@@ -159,5 +159,46 @@ namespace Omnos.Desktop.ApiClient.Services
         {
             return !string.IsNullOrEmpty(Token) && TokenExpiration > DateTime.UtcNow;
         }
+
+        // Método para solicitar recuperação de senha
+        public async Task<bool> ForgotPasswordAsync(string email)
+        {
+            try
+            {
+                var request = new ForgotPasswordModel { Email = email };
+                var response = await _apiClient.PostAsync<ForgotPasswordModel, object>("user/ForgotPassword", request);
+                
+                // A API retorna 200 OK mesmo se o e-mail não existir (por segurança)
+                // Então consideramos sucesso se não houver exceção
+                return response != null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO EM ForgotPasswordAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Método para redefinir a senha com o token
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            try
+            {
+                var request = new ResetPasswordModel
+                {
+                    Email = email,
+                    Token = token,
+                    NewPassword = newPassword
+                };
+
+                var response = await _apiClient.PostAsync<ResetPasswordModel, object>("user/ResetPassword", request);
+                return (response != null, "Senha redefinida com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO EM ResetPasswordAsync: {ex.Message}");
+                return (false, $"Erro ao redefinir senha: {ex.Message}");
+            }
+        }
     }
 }

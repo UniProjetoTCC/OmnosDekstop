@@ -75,7 +75,15 @@ namespace Omnos.Desktop.App.ViewModels
         public string PlainTextPassword
         {
             get => _plainTextPassword;
-            set => SetProperty(ref _plainTextPassword, value);
+            set
+            {
+                SetProperty(ref _plainTextPassword, value);
+                if (IsPasswordVisible)
+                {
+                    // Quando o texto visível é alterado, atualiza a senha
+                    _password = value;
+                }
+            }
         }
 
         private bool _isPasswordVisible;
@@ -97,16 +105,29 @@ namespace Omnos.Desktop.App.ViewModels
 
             TogglePasswordVisibilityCommand = new RelayCommand(_ =>
             {
+                // Salva o valor atual antes de alternar a visibilidade
+                string currentValue = IsPasswordVisible ? PlainTextPassword : Password;
+                
+                // Alterna a visibilidade
                 IsPasswordVisible = !IsPasswordVisible;
+                
+                // Atualiza o campo apropriado com o valor salvo
                 if (IsPasswordVisible)
                 {
-                    PlainTextPassword = Password;
+                    PlainTextPassword = currentValue;
                 }
+                else
+                {
+                    Password = currentValue;
+                }
+                
+                // Atualiza o estado do botão de login
+                LoginCommand.RaiseCanExecuteChanged();
             });
 
             ForgotPasswordCommand = new RelayCommand(_ =>
             {
-                MessageBox.Show("Funcionalidade de recuperação de senha a ser implementada.", "Recuperar Senha");
+                _navigationService.NavigateTo<ForgotPasswordView>(Email);
             });
         }
 
